@@ -2,11 +2,11 @@
 // PF Claim Decoder — Standalone Test Suite Runner
 // ============================================================
 
-import { matchTaxonomy } from '../lib/matchTaxonomy';
-import { TAXONOMY } from '../lib/taxonomy';
-import { checkSensitiveData } from '../lib/safetyUtils';
-import { buildVerificationMatrix } from '../lib/verificationMatrix';
-import { generateGrievanceDraft, generateRtiDraft } from '../lib/documentTemplates';
+import { matchTaxonomy } from '../lib/matchTaxonomy.ts';
+import { TAXONOMY } from '../lib/taxonomy.ts';
+import { checkSensitiveData } from '../lib/safetyUtils.ts';
+import { buildVerificationMatrix } from '../lib/verificationMatrix.ts';
+import { generateGrievanceDraft, generateRtiDraft } from '../lib/documentTemplates.ts';
 
 let passed = 0;
 let failed = 0;
