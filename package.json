@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "echo \"All test suites passed.\""
+    "test": "npx tsx ./src/__tests__/run-all-tests.mjs"
   },
   "dependencies": {
     "next": "16.3.2",
