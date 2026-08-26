@@ -1,7 +1,7 @@
 // ============================================================
 // PF Claim Decoder — API Route: /api/explain
 // ============================================================
-// Server-side OpenAI explanation route with schema validation
+// Server-side Gemini explanation route with schema validation
 // and deterministic fallback on failure or timeout.
 //
 // Critical rules:
@@ -50,10 +50,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
     // Deterministic fallback if API key is placeholder or missing
-    if (!apiKey || apiKey.startsWith('sk-placeholder') || apiKey.length < 10) {
+    if (!apiKey || apiKey === 'your-gemini-api-key-here' || apiKey.length < 10) {
       const fallbackExplanation: ExplanationResponse = {
         summary: language === 'hi' ? entry.explanationTemplateHi : entry.explanationTemplate,
         verificationState: 'possible_issue',
@@ -82,10 +82,8 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Call OpenAI with strict system prompt and schema
-    const systemPrompt = `
+    const prompt = `
 You are a specialized assistant for the "PF Claim Decoder & Action Pack" citizen prototype.
-Your role is to produce a plain-language explanation of a synthetic PF claim remark.
 
 SAFETY RULES:
 1. The category is FIXED: "${entry.label}" (ID: ${entry.id}). Do NOT change, reclassify, or invent categories.
@@ -94,10 +92,8 @@ SAFETY RULES:
 4. Clearly separate what the remark suggests from what remains unverified or unknown.
 5. All input is SYNTHETIC demo data.
 6. Language: Return output in ${language === 'hi' ? 'Hindi (हिन्दी)' : 'English'}.
-7. Return strictly valid JSON conforming to the requested schema.
-`.trim();
+7. Return strictly valid JSON only — no markdown, no code fences.
 
-    const userPrompt = `
 Synthetic Claim Input:
 - Claimant Name: ${claimInput.claimantName}
 - Claim Reference: ${claimInput.claimReference}
@@ -107,7 +103,7 @@ Synthetic Claim Input:
 - Fixed Category: ${entry.label} (${entry.id})
 - Approved Checklist: ${entry.checklist.join('; ')}
 
-Produce a structured explanation in JSON format:
+Produce a structured explanation as JSON:
 {
   "summary": "Clear, grounded 2-3 sentence explanation of the remark",
   "verificationState": "possible_issue",
@@ -127,40 +123,39 @@ Produce a structured explanation in JSON format:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-    const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
-        ],
-        response_format: { type: 'json_object' },
-        temperature: 0.2,
-      }),
-      signal: controller.signal,
-    });
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.2,
+            responseMimeType: 'application/json',
+          },
+        }),
+        signal: controller.signal,
+      }
+    );
 
     clearTimeout(timeoutId);
 
-    if (!openAiRes.ok) {
-      throw new Error(`OpenAI API returned status ${openAiRes.status}`);
+    if (!geminiRes.ok) {
+      throw new Error(`Gemini API returned status ${geminiRes.status}`);
     }
 
-    const openAiData = await openAiRes.json();
-    const content = openAiData.choices?.[0]?.message?.content;
+    const geminiData = await geminiRes.json();
+    const content = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
     const parsedExplanation: ExplanationResponse = JSON.parse(content);
 
     return NextResponse.json({
       explanation: parsedExplanation,
-      source: 'openai_gpt4o_mini',
+      source: 'gemini_1_5_flash',
     });
-  } catch (error: any) {
-    console.warn('OpenAI explanation route failed or timed out, returning fallback:', error.message);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.warn('Gemini explanation route failed or timed out, returning fallback:', message);
 
     // Graceful fallback
     return NextResponse.json({

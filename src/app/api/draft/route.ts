@@ -1,13 +1,13 @@
 // ============================================================
 // PF Claim Decoder — API Route: /api/draft
 // ============================================================
-// Server-side OpenAI document drafting route (Grievance / RTI)
+// Server-side Gemini document drafting route (Grievance / RTI)
 // with deterministic fallback.
 // ============================================================
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getTaxonomyEntry } from '@/lib/taxonomy';
-import { ClaimInput, DocumentDraft, DocumentType } from '@/lib/types';
+import { ClaimInput, DocumentDraft } from '@/lib/types';
 import { generateGrievanceDraft, generateRtiDraft } from '@/lib/documentTemplates';
 import { checkSensitiveData } from '@/lib/safetyUtils';
 
@@ -45,10 +45,10 @@ export async function POST(req: NextRequest) {
     }
 
     const entry = getTaxonomyEntry(categoryId);
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    // Fallback if no valid OpenAI API key
-    if (!apiKey || apiKey.startsWith('sk-placeholder') || apiKey.length < 10) {
+    // Fallback if no valid Gemini API key
+    if (!apiKey || apiKey === 'your-gemini-api-key-here' || apiKey.length < 10) {
       const match = {
         categoryId,
         confidence: 'high' as const,
@@ -67,20 +67,19 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const systemPrompt = `
+    const prompt = `
 You are an expert citizen assistance legal drafting assistant.
-Your role is to draft a formal ${docType === 'grievance' ? 'EPFiGMS Grievance' : 'RTI Online Application'} based ONLY on the supplied synthetic facts.
+Draft a formal ${docType === 'grievance' ? 'EPFiGMS Grievance' : 'RTI Online Application'} based ONLY on the supplied synthetic facts.
+Language: ${language === 'hi' ? 'Hindi (हिन्दी)' : 'English'}.
 
 RULES:
 1. Do NOT invent real government responses or reference numbers.
 2. Use synthetic names and references as supplied.
 3. If drafting an RTI: focus on file movement, noting copies, and specific grounds under RTI Act 2005.
 4. If drafting a Grievance: state facts, attach checklist, and politely request resolution.
-5. End with the mandatory notice: "Generated from synthetic input by an independent prototype. Not an official EPFO document."
-6. Language: ${language === 'hi' ? 'Hindi (हिन्दी)' : 'English'}.
-`.trim();
+5. End with: "Generated from synthetic input by an independent prototype. Not an official EPFO document."
+6. Return plain text only — no markdown formatting.
 
-    const userPrompt = `
 Draft Type: ${docType.toUpperCase()}
 Category: ${entry?.label || categoryId}
 Claimant: ${claimInput.claimantName}
@@ -93,48 +92,45 @@ Remark: "${claimInput.remark}"
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-    const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
-        ],
-        temperature: 0.2,
-      }),
-      signal: controller.signal,
-    });
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.2 },
+        }),
+        signal: controller.signal,
+      }
+    );
 
     clearTimeout(timeoutId);
 
-    if (!openAiRes.ok) {
-      throw new Error(`OpenAI returned ${openAiRes.status}`);
+    if (!geminiRes.ok) {
+      throw new Error(`Gemini returned ${geminiRes.status}`);
     }
 
-    const data = await openAiRes.json();
-    const draftText = data.choices?.[0]?.message?.content || '';
+    const data = await geminiRes.json();
+    const draftText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     const draft: DocumentDraft = {
       type: docType,
       title: `${docType === 'grievance' ? 'EPFiGMS Grievance' : 'RTI Application'} — ${claimInput.claimReference}`,
       body: draftText,
       missingFields: [],
-      assumptions: ['Draft enriched via OpenAI gpt-4o-mini'],
+      assumptions: ['Draft enriched via Gemini 1.5 Flash'],
       footer:
         '--------------------------------------------------\nGenerated from synthetic input by an independent prototype.\nNot an official EPFO document. Review before submitting.\n--------------------------------------------------',
     };
 
     return NextResponse.json({
       draft,
-      source: 'openai_gpt4o_mini',
+      source: 'gemini_1_5_flash',
     });
-  } catch (err: any) {
-    console.warn('Drafting API fallback:', err.message);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    console.warn('Drafting API fallback:', message);
 
     const match = {
       categoryId: 'other_unclear',
