@@ -23,7 +23,7 @@ export function ProgressBar() {
   ];
 
   return (
-    <div className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-[var(--header-height,0)] z-30">
+    <div className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
         <nav aria-label="Journey Progress" className="flex items-center justify-between overflow-x-auto no-scrollbar gap-1 sm:gap-2">
           {steps.map((step, idx) => {
@@ -67,7 +67,7 @@ export function ProgressBar() {
                       step.num
                     )}
                   </span>
-                  <span className="whitespace-nowrap hidden sm:inline">{step.label}</span>
+                  <span className="whitespace-nowrap hidden md:inline">{step.label}</span>
                 </Link>
 
                 {idx < steps.length - 1 && (

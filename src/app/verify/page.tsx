@@ -86,8 +86,27 @@ export default function VerifyPage() {
           </div>
         </div>
 
-        {/* Verification Matrix Table */}
-        <div className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm animate-scale-up">
+        {/* Verification Matrix — Responsive List on Mobile, Table on Tablet/Desktop */}
+        <div className="block sm:hidden space-y-4 animate-scale-up">
+          {verificationMatrix.map((item, idx) => (
+            <div
+              key={idx}
+              className="p-5 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col gap-3 hover-card-trigger"
+            >
+              <div className="flex items-center justify-between gap-3 border-b border-gray-100 dark:border-gray-800 pb-2.5">
+                <span className="font-bold text-gray-900 dark:text-gray-100 text-sm">
+                  {language === 'hi' ? item.conditionHi : item.condition}
+                </span>
+                <StatusBadge status={item.status} />
+              </div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                {language === 'hi' ? item.meaningHi : item.meaning}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden sm:block rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm animate-scale-up">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-bold uppercase tracking-wider text-xs">

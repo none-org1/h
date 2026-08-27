@@ -176,7 +176,7 @@ export default function DocumentPage() {
 
             <div className="flex flex-col sm:flex-row items-center gap-2 w-full sm:w-auto">
               <div className="w-full sm:w-auto">
-                <CopyButton text={currentText} />
+                <CopyButton text={currentText} className="w-full" />
               </div>
               <button
                 type="button"
