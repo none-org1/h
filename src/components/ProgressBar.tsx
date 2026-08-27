@@ -23,9 +23,9 @@ export function ProgressBar() {
   ];
 
   return (
-    <div className="w-full bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30 shadow-xs">
-      <div className="max-w-6xl mx-auto px-4 py-3">
-        <nav aria-label="Journey Progress" className="flex items-center justify-between overflow-x-auto no-scrollbar gap-2 sm:gap-4">
+    <div className="w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-[var(--header-height,0)] z-30">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3">
+        <nav aria-label="Journey Progress" className="flex items-center justify-between overflow-x-auto no-scrollbar gap-1 sm:gap-2">
           {steps.map((step, idx) => {
             const isActive = activeStep === step.num;
             const isCompleted = activeStep > step.num;
@@ -42,38 +42,38 @@ export function ProgressBar() {
                       setActiveStep(step.num);
                     }
                   }}
-                  className={`flex items-center gap-2 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+                  className={`flex items-center gap-2 px-2 sm:px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 font-bold border border-blue-200 dark:border-blue-800'
+                      ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold border border-indigo-200 dark:border-indigo-800'
                       : isCompleted
-                      ? 'text-emerald-700 dark:text-emerald-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-                      : 'text-zinc-400 dark:text-zinc-500 cursor-not-allowed opacity-75'
+                      ? 'text-emerald-700 dark:text-emerald-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      : 'text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-60'
                   }`}
                 >
                   <span
-                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all duration-200 ${
                       isActive
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30 animate-pulse-ring'
                         : isCompleted
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                        ? 'bg-emerald-600 text-white shadow-sm'
+                        : 'bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
                     }`}
                   >
                     {isCompleted ? (
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                       </svg>
                     ) : (
                       step.num
                     )}
                   </span>
-                  <span className="whitespace-nowrap">{step.label}</span>
+                  <span className="whitespace-nowrap hidden sm:inline">{step.label}</span>
                 </Link>
 
                 {idx < steps.length - 1 && (
                   <div
-                    className={`h-[2px] w-3 sm:w-6 mx-1 sm:mx-2 shrink-0 ${
-                      isCompleted ? 'bg-emerald-500' : 'bg-zinc-200 dark:bg-zinc-800'
+                    className={`h-[2px] w-4 sm:w-8 mx-1 sm:mx-2 shrink-0 rounded-full transition-colors duration-300 ${
+                      isCompleted ? 'bg-emerald-500' : 'bg-gray-200 dark:bg-gray-800'
                     }`}
                   />
                 )}

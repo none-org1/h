@@ -19,13 +19,13 @@ export default function HandoffPage() {
 
   if (!decodedResult) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4">
-        <p className="text-sm text-slate-500">
+      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4 animate-fade-in">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           {language === 'hi' ? 'कोई दावा डेटा लोड नहीं हुआ है।' : 'No claim data has been decoded yet.'}
         </p>
         <Link
           href="/input"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold text-sm"
+          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-200"
         >
           {language === 'hi' ? 'इनपुट पर जाएं' : 'Go to Input'}
         </Link>
@@ -98,58 +98,58 @@ OFFICIAL PORTAL LINKS:
   };
 
   return (
-    <div className="flex-1 py-8 px-4">
+    <div className="flex-1 py-8 px-4 animate-fade-in">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Step Indicator */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
             <span>{language === 'hi' ? 'चरण 6 / 6' : 'Step 6 of 6'}</span>
             <span>•</span>
             <span>{t.step6}</span>
           </div>
           <Link
             href="/document"
-            className="text-xs text-slate-500 hover:text-blue-600 underline font-medium"
+            className="text-xs text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 underline font-medium transition-all duration-200"
           >
             ← {language === 'hi' ? 'दस्तावेज़ संपादित करें' : 'Back to Documents'}
           </Link>
         </div>
 
         {/* Title */}
-        <div className="space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-50">
+        <div className="space-y-2">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-50">
             {t.handoffTitle}
           </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             {t.handoffSubtitle}
           </p>
         </div>
 
         {/* Clean Break Banner */}
-        <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-950 dark:text-emerald-200 flex items-start gap-4 shadow-xs">
-          <div className="p-2.5 bg-emerald-500/20 rounded-xl shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400">
+        <div className="p-6 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 text-emerald-950 dark:text-emerald-200 flex flex-col sm:flex-row items-start gap-4 shadow-sm">
+          <div className="p-3 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
           </div>
-          <div className="space-y-1 text-xs sm:text-sm">
-            <p className="font-bold text-sm text-emerald-900 dark:text-emerald-300">
+          <div className="space-y-2 text-sm sm:text-base">
+            <p className="font-bold text-emerald-900 dark:text-emerald-300">
               {t.handoffWarningTitle}
             </p>
-            <p className="leading-relaxed text-emerald-800 dark:text-emerald-200/90">
+            <p className="leading-relaxed text-emerald-800 dark:text-emerald-200/90 text-sm">
               {t.handoffWarningBody}
             </p>
           </div>
         </div>
 
         {/* Action Pack Download & Quick Copy Container */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-xs space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-zinc-800">
-            <div className="space-y-1">
-              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-slate-50">
+        <div className="p-4 sm:p-6 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm space-y-6 animate-scale-up">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100 dark:border-gray-800">
+            <div className="space-y-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-50">
                 {language === 'hi' ? 'पूर्ण एक्शन पैक निर्यात करें' : 'Download Complete Action Pack'}
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {language === 'hi'
                   ? 'निदान, साक्ष्य चेकलिस्ट और ड्राफ्ट दोनों को एक एकल .txt फ़ाइल में शामिल करता है'
                   : 'Includes full diagnosis, matrix, evidence checklist, and both document drafts in a single bundle'}
@@ -159,9 +159,9 @@ OFFICIAL PORTAL LINKS:
             <button
               type="button"
               onClick={handleDownloadActionPack}
-              className="px-5 py-3 rounded-xl bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-white text-white dark:text-slate-900 text-xs sm:text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gray-900 dark:bg-gray-100 hover:bg-gray-800 dark:hover:bg-white text-white dark:text-gray-900 text-sm font-bold transition-all duration-200 shadow-md flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-indigo-500"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
               <span>{t.downloadActionPackBtn}</span>
@@ -170,12 +170,12 @@ OFFICIAL PORTAL LINKS:
 
           {/* Quick Copy Buttons */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200/80 dark:border-zinc-800/80 space-y-3">
-              <div className="space-y-0.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 space-y-3 hover-card-trigger">
+              <div className="space-y-1">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                   {language === 'hi' ? 'विकल्प A: शिकायत' : 'Option A: Grievance'}
                 </span>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
                   EPFiGMS Grievance Draft
                 </h3>
               </div>
@@ -186,12 +186,12 @@ OFFICIAL PORTAL LINKS:
               />
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-zinc-950 border border-slate-200/80 dark:border-zinc-800/80 space-y-3">
-              <div className="space-y-0.5">
+            <div className="p-4 rounded-xl bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 space-y-3 hover-card-trigger">
+              <div className="space-y-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                   {language === 'hi' ? 'विकल्प B: RTI' : 'Option B: RTI Application'}
                 </span>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
                   RTI Information Request
                 </h3>
               </div>
@@ -205,15 +205,15 @@ OFFICIAL PORTAL LINKS:
         </div>
 
         {/* Official Portal External Launchers */}
-        <div className="rounded-2xl p-6 sm:p-8 bg-gradient-to-tr from-blue-900 via-indigo-900 to-slate-900 text-white shadow-xl space-y-6">
-          <div className="space-y-1">
-            <span className="text-xs uppercase font-bold tracking-widest text-blue-300">
+        <div className="rounded-2xl p-6 sm:p-8 bg-gradient-to-tr from-indigo-900 via-blue-900 to-gray-900 text-white shadow-xl space-y-6">
+          <div className="space-y-2">
+            <span className="text-xs uppercase font-bold tracking-widest text-indigo-300">
               {language === 'hi' ? 'आधिकारिक सरकारी चैनल' : 'Official Government Channels'}
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold">
+            <h2 className="text-2xl sm:text-3xl font-bold">
               {language === 'hi' ? 'आधिकारिक पोर्टलों पर जाएं' : 'Proceed to Official Submission'}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300">
+            <p className="text-sm text-gray-300">
               {language === 'hi'
                 ? 'सरकारी पोर्टलों पर सबमिशन केवल नागरिक द्वारा व्यक्तिगत रूप से किया जाता है।'
                 : 'Submissions must be made independently by the citizen on verified official portals.'}
@@ -225,14 +225,14 @@ OFFICIAL PORTAL LINKS:
               href="https://epfigms.gov.in/"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 transition-all flex items-center justify-between group"
+              className="p-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 transition-all duration-200 flex items-center justify-between group focus-visible:ring-2 focus-visible:ring-white"
             >
-              <div className="space-y-0.5">
-                <p className="text-xs text-blue-200 font-bold">Official Grievance Portal</p>
+              <div className="space-y-1">
+                <p className="text-xs text-indigo-200 font-bold">Official Grievance Portal</p>
                 <p className="text-base font-bold">EPFiGMS Portal</p>
-                <p className="text-[11px] text-slate-300 font-mono">epfigms.gov.in</p>
+                <p className="text-[11px] text-gray-300 font-mono">epfigms.gov.in</p>
               </div>
-              <svg className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
@@ -241,14 +241,14 @@ OFFICIAL PORTAL LINKS:
               href="https://rtionline.gov.in/"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 transition-all flex items-center justify-between group"
+              className="p-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 transition-all duration-200 flex items-center justify-between group focus-visible:ring-2 focus-visible:ring-white"
             >
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 <p className="text-xs text-indigo-200 font-bold">Official RTI Filing</p>
                 <p className="text-base font-bold">RTI Online Portal</p>
-                <p className="text-[11px] text-slate-300 font-mono">rtionline.gov.in</p>
+                <p className="text-[11px] text-gray-300 font-mono">rtionline.gov.in</p>
               </div>
-              <svg className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
@@ -256,13 +256,13 @@ OFFICIAL PORTAL LINKS:
         </div>
 
         {/* Start Over Button */}
-        <div className="flex items-center justify-center pt-4">
+        <div className="flex items-center justify-center pt-8">
           <button
             type="button"
             onClick={handleStartOver}
-            className="px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-800 dark:text-slate-200 text-sm font-bold border border-slate-200 dark:border-zinc-700 transition-colors flex items-center gap-2"
+            className="w-full sm:w-auto px-8 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm font-bold shadow-sm transition-all duration-200 flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-indigo-500"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             <span>{t.startOverBtn}</span>
