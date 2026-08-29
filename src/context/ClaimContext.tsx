@@ -19,6 +19,7 @@ import { buildVerificationMatrix } from '@/lib/verificationMatrix';
 import { buildActionPlan } from '@/lib/actionRecommendation';
 import { generateGrievanceDraft, generateRtiDraft } from '@/lib/documentTemplates';
 import { DEMO_SCENARIOS } from '@/lib/demoScenarios';
+import { saveClaimToSupabase } from '@/lib/supabaseClient';
 
 const DEFAULT_INPUT: ClaimInput = {
   claimantName: 'Aarav Mehta',
@@ -79,6 +80,8 @@ export function ClaimProvider({ children }: { children: React.ReactNode }) {
     };
 
     setDecodedResult(result);
+    // Persist claim, match, and drafts to Supabase asynchronously
+    saveClaimToSupabase(input, match, null, grievanceDraft, rtiDraft);
     return result;
   };
 
@@ -129,15 +132,23 @@ export function ClaimProvider({ children }: { children: React.ReactNode }) {
 
       const data = await res.json();
       if (data.explanation) {
-        setDecodedResult((prev) =>
-          prev
-            ? {
-                ...prev,
-                aiEnhanced: true,
-                explanation: data.explanation,
-              }
-            : null
-        );
+        setDecodedResult((prev) => {
+          if (!prev) return null;
+          const updated = {
+            ...prev,
+            aiEnhanced: true,
+            explanation: data.explanation,
+          };
+          // Persist updated AI explanation to Supabase
+          saveClaimToSupabase(
+            prev.input,
+            prev.match,
+            data.explanation,
+            prev.grievanceDraft,
+            prev.rtiDraft
+          );
+          return updated;
+        });
       }
     } catch (err: any) {
       console.warn('AI enhancement fallback to deterministic explanation:', err);
